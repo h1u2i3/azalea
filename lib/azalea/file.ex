@@ -12,21 +12,21 @@ defmodule Azalea.File do
   @doc """
   Cast from other struct, include Map, Plug.Upload, Ecto.Changeset
   """
-  def cast(params, field \\ nil)
+  def cast_file(params, field \\ nil)
 
-  def cast(%Ecto.Changeset{} = params, field) do
+  def cast_file(%Ecto.Changeset{} = params, field) do
     from_changeset(params, field)
   end
 
-  def cast(%Plug.Upload{} = params, _field) do
+  def cast_file(%Plug.Upload{} = params, _field) do
     from_plug(params)
   end
 
-  def cast(params, _field) when is_map(params) do
+  def cast_file(params, _field) when is_map(params) do
     make_struct_from_target(params)
   end
 
-  def cast(_, _) do
+  def cast_file(_, _) do
     empty_struct
   end
 

@@ -2,21 +2,11 @@ defmodule Azalea.Uploader.Qiniu do
   @moduledoc """
   File uploader for Qiniu
   """
-  require IEx
   import Azalea.Uploader.Crypto
   import Azalea.Http
 
-  alias Azalea.File, as: AF
-
   @upload_url "http://upload.qiniu.com"
   @resource_url "http://ohnslot2o.bkt.clouddn.com"
-
-  def upload(file, options)
-
-  def upload(%AF{valid: false}, options) do
-    kind = options[:kind] || :main
-    {kind, {:error, :file_invalid}}
-  end
 
   def upload(file, options) do
     scope = options[:scope] || raise "You did not set the Qiniu scope"

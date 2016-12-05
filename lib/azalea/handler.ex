@@ -33,9 +33,15 @@ defmodule Azalea.Handler do
 
     method_string = """
     def handle(struct) do
-      file = struct |> cast |> check
+      file = struct |> cast_file |> check
       file = %{file | module: #{env.module}}
-      Enum.map(#{Macro.to_string(keys)}, &do_handler(file, &1))
+
+      case file.valid do
+        true ->
+          Enum.map(#{Macro.to_string(keys)}, &do_handler(file, &1))
+        false ->
+          :invalid_file
+      end
     end
 
     defp do_handler(file, key)

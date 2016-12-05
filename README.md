@@ -5,23 +5,21 @@ It is still in development.
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed as:
+1. Add `azalea` to your list of dependencies in `mix.exs`:
 
-  1. Add `azalea` to your list of dependencies in `mix.exs`:
+  ```elixir
+  def deps do
+    [{:azalea, github: "h1u2i3/azalea"]
+  end
+  ```
 
-    ```elixir
-    def deps do
-      [{:azalea, "~> 0.1.0"}]
-    end
-    ```
+2. Ensure `azalea` is started before your application:
 
-  2. Ensure `azalea` is started before your application:
-
-    ```elixir
-    def application do
-      [applications: [:azalea]]
-    end
-    ```
+  ```elixir
+  def application do
+    [applications: [:azalea]]
+  end
+  ```
 
 ## The upload steps
 1. Normally we can get a file from `Plug`,
@@ -43,8 +41,3 @@ the file we want.
 
 4. Generate the needed data (with the data we can read from the database and
    then we can get the file link) and save to database.
-
-## Todos
-- [  ] `Plug.Upload` struct transform to `Azalea` type.
-- [  ] Add the `Azalea` checker, check the file we get.
-- [  ] Add the `Azalea` uploader, and the `hanlder`, upload to cloud or local.

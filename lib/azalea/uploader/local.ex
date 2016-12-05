@@ -21,7 +21,7 @@ defmodule Azalea.Uploader.Local do
     try do
       case AF.save(file, new_file) do
         :ok -> {kind, %{new_file | url: url}}
-        _   -> {kind, {:error, :save_failed}}
+        _   -> {kind, :error}
       end
     after
       AF.delete(file)

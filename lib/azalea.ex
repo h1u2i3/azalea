@@ -15,6 +15,7 @@ defmodule Azalea do
       use Azalea.Checker
       use Azalea.Handler
       use Azalea.Uploader
+      use Azalea.EctoType
 
       @before_compile Azalea.Handler
 
