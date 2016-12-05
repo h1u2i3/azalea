@@ -2,6 +2,7 @@
 
 Azalea is aim to make upload file in Phoenix easy.
 It is still in development.
+You can check the [Example](https://github.com/h1u2i3/azalea_example)
 
 ## Installation
 
