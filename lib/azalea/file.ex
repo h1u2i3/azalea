@@ -14,6 +14,8 @@ defmodule Azalea.File do
   """
   def cast_file(params, field \\ nil)
 
+  def cast_file(%__MODULE__{} = params, _), do: params
+
   def cast_file(%Ecto.Changeset{} = params, field) do
     from_changeset(params, field)
   end

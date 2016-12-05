@@ -38,9 +38,10 @@ defmodule Azalea.Handler do
 
       case file.valid do
         true ->
-          Enum.map(#{Macro.to_string(keys)}, &do_handler(file, &1))
+          #{Macro.to_string(keys)}
+          |> Enum.map(&do_handler(file, &1))
         false ->
-          :invalid_file
+          []
       end
     end
 

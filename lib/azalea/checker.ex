@@ -22,7 +22,11 @@ defmodule Azalea.Checker do
   defmacro type(types) do
     quote do
       defp validate_type(file) do
-        %Azalea.File{file | valid: file_type_in?(file, unquote(types))}
+        case file do
+          %Azalea.File{} ->
+            %Azalea.File{file | valid: file_type_in?(file, unquote(types))}
+          _ -> file
+        end
       end
     end
   end
@@ -36,7 +40,11 @@ defmodule Azalea.Checker do
   defmacro size(range) do
     quote do
       defp validate_size(file) do
-        %Azalea.File{file | valid: file_size_in?(file, unquote(range))}
+        case file do
+          %Azalea.File{} ->
+            %Azalea.File{file | valid: file_size_in?(file, unquote(range))}
+          _ -> file
+        end
       end
     end
   end
@@ -44,6 +52,7 @@ defmodule Azalea.Checker do
   defmacro __using__(_opts) do
     quote do
       import unquote(__MODULE__)
+      import Ecto.Changeset, only: [get_change: 2, validate_change: 3]
 
       @doc """
       Just check with the given `Azalea.File`,
@@ -54,6 +63,26 @@ defmodule Azalea.Checker do
         |> validate_empty
         |> validate_type
         |> validate_size
+      end
+
+      @doc """
+      Validate method for use with ecto.
+      """
+      def validate_upload(changeset, field) do
+        value = changeset |> get_change(field)
+        case value do
+          nil -> changeset
+          _ ->
+            require Logger
+            Logger.info inspect(value)
+            if length(value) == 0 do
+              validate_change(changeset, field, fn(_, _) ->
+                [{field, "Upload file invalid!"}]
+              end)
+            else
+              changeset
+            end
+        end
       end
 
       defp file_type_in?(file, types) do
@@ -75,10 +104,14 @@ defmodule Azalea.Checker do
       end
 
       defp validate_empty(file) do
-        if Azalea.File.is_empty?(file) do
-          %Azalea.File{file | valid: false}
-        else
-          file
+        case file do
+          %Azalea.File{} ->
+            if Azalea.File.is_empty?(file) do
+              %Azalea.File{file | valid: false}
+            else
+              file
+            end
+          _ -> file
         end
       end
 
