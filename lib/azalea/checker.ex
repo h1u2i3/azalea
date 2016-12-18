@@ -32,7 +32,7 @@ defmodule Azalea.Checker do
   end
 
   @doc """
-  User to set the file size in checker builder
+  Use to set the file size in checker builder
   size unit: kb
 
       size min: 100, max: 10000

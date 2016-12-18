@@ -1,4 +1,9 @@
 defmodule Azalea.EctoType do
+  @moduledoc """
+  The Ecto type to work with ecto.
+  You can add the Azalea's ecto type, just by add
+  """
+
   defmacro __using__(_opts) do
     quote do
       @behaviour Ecto.Type

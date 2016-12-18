@@ -1,6 +1,14 @@
 defmodule Azalea.File do
   @moduledoc """
   The file struct need for this module.
+
+    * filename, the file's name of the file
+    * type, the file's content type, eg: :jpg, :png, :gif
+    * path, the file's path in disk or the key in the cloud
+    * valid, check if the file is valid
+    * uploader, the uploader of the file, normally is local or other uploader handler
+    * module, the module you defined to perform all the operation
+    * url, the url path of the file, you can get the file through this
   """
 
   alias Elixir.File, as: F
@@ -11,6 +19,9 @@ defmodule Azalea.File do
 
   @doc """
   Cast from other struct, include Map, Plug.Upload, Ecto.Changeset
+
+    * params  struct of the  file you want to convert
+    * field  optional key for you to define which fied of the struct is Azalea.File
   """
   def cast_file(params, field \\ nil)
 
