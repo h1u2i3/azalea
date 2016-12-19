@@ -14,7 +14,7 @@ defmodule Azalea.Tool.Fetcher do
         result = struct.files |> Enum.map(&BaseType.url(&1, key))
         cond do
           is_list(result) && length(result) == 1 ->
-            result |> List.flatten
+            result |> List.first
           is_list(result) ->
             result
           true -> nil

@@ -2,20 +2,13 @@ defmodule Azalea.Type.EctoType do
   @moduledoc """
   The Ecto type to work with ecto.
   """
-  alias Azalea.Type.BaseType
-
-  defstruct [:files, :urls]
+  defstruct [:files]
 
   @doc """
   Return from the database, should be a `MapSet`
   """
   def new(files) when is_list(files) do
-    IO.inspect files
-    struct(__MODULE__, %{files: files, urls: build_urls(files)})
-  end
-
-  defp build_urls(files) do
-    files |> Enum.map(&BaseType.url/1)
+    struct(__MODULE__, %{files: files})
   end
 
   defmacro __using__(_opts) do
@@ -29,9 +22,9 @@ defmodule Azalea.Type.EctoType do
       def type, do: :text
 
       # check with the file and dispatch to the right result
+      def cast(%EctoType{} = type), do: cast_ecto_type(type)
       def cast(file) when is_map(file), do: file |> List.wrap |> cast
       def cast(files) when is_list(files), do: cast_mutiply_file(files)
-      def cast(%EctoType{} = type), do: cast_ecto_type(type)
       def cast(_), do: :error
 
       defp cast_mutiply_file(files) do
@@ -57,11 +50,7 @@ defmodule Azalea.Type.EctoType do
       end
 
       defp cast_ecto_type(type) do
-        if MapSet.new == type do
-          {:ok, ""}
-        else
-          {:ok, type.files}
-        end
+        {:ok, type.files}
       end
 
       defp file_valid?(file) do
@@ -90,7 +79,6 @@ defmodule Azalea.Type.EctoType do
       defp do_cast(files)
       defp do_cast(files) when is_list(files) do
         results = files |> Enum.map(&do_cast/1)
-        IO.inspect results
         case Enum.any?(results, &(&1 == :error)) do
           true -> :error
           false -> results

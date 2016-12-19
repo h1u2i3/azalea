@@ -9,7 +9,7 @@ defmodule Azalea.Uploader.Local do
   And then delete the origin file.
   """
   def upload(file, options) do
-    root = options[:base_path] || raise "You did not set the local save path"
+    _ = options[:base_path] || raise "You did not set the local save path"
     root_url = options[:base_url] || raise "You did not set the url base url"
 
     kind = options[:kind] || :main
