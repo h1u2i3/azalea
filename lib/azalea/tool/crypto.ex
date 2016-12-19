@@ -1,4 +1,4 @@
-defmodule Azalea.Uploader.Crypto do
+defmodule Azalea.Tool.Crypto do
   @moduledoc """
   Crypto Helper methods.
   """

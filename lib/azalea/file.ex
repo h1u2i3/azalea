@@ -15,7 +15,7 @@ defmodule Azalea.File do
   alias Azalea.File, as: AF
 
   defstruct filename: nil, type: nil, path: nil, valid: true,
-            uploader: nil, module: nil, url: nil
+            uploader: nil, module: nil, url: nil, key: nil
 
   @doc """
   Cast from other struct, include Map, Plug.Upload, Ecto.Changeset
@@ -127,7 +127,7 @@ defmodule Azalea.File do
       |> Plug.Conn.Utils.media_type
       |> elem(2)
       |> String.to_atom
-    type = if type == :jpeg, do: :jpg
+    type = if type == :jpeg, do: :jpg, else: type
     type
   end
 

@@ -1,4 +1,4 @@
-defmodule Azalea.Http do
+defmodule Azalea.Tool.Http do
   @moduledoc """
   Make http request
   """

@@ -13,15 +13,15 @@ defmodule Azalea.Uploader.Local do
     root_url = options[:base_url] || raise "You did not set the url base url"
 
     kind = options[:kind] || :main
-    path = Path.join(root, "#{file.filename}")
+    path = file.filename
     url = root_url <> "/" <> file.filename
 
     new_file = %{file | path: path, uploader: __MODULE__}
 
     try do
       case AF.save(file, new_file) do
-        :ok -> {kind, %{new_file | url: url}}
-        _   -> {kind, :error}
+        :ok -> %{new_file | url: url, key: kind}
+        _   -> :error
       end
     after
       AF.delete(file)

@@ -1,4 +1,4 @@
-defmodule Azalea.TestCase do
+defmodule Azalea.Tool.TestCase do
   @moduledoc """
   Test method with Azalea
   """

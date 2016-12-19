@@ -33,21 +33,30 @@ defmodule Azalea.Handler do
 
     method_string = """
     def handle(struct) do
-      file = struct |> cast_file |> check
-      file = %{file | module: #{env.module}}
+      if struct == [] do
+        []
+      else
+        file = struct |> cast_file |> check
+        file = %{file | module: #{env.module}}
 
-      case file.valid do
-        true ->
-          #{Macro.to_string(keys)}
-          |> Enum.map(&do_handler(file, &1))
-        false ->
-          []
+        case file.valid do
+          true ->
+            #{Macro.to_string(keys)}
+            |> Enum.map(&do_handler(&1, file))
+            |> Azalea.Type.BaseType.cast
+          false ->
+            {:error, :file_invalid}
+        end
       end
     end
 
-    defp do_handler(file, key)
+    defp do_handler(key, file)
+
     #{handler_method_string(calls)}
-    defp do_handler(_, _), do: []
+
+    defp do_handler(_, _) do
+      raise "you should add the method 'handler' before you start"
+    end
     """
 
     Code.eval_string(method_string, [], env)
