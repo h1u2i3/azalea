@@ -2,8 +2,8 @@ defmodule Azalea.Uploader.Qiniu do
   @moduledoc """
   File uploader for Qiniu
   """
-  import Azalea.Uploader.Crypto
-  import Azalea.Http
+  import Azalea.Tool.Crypto
+  import Azalea.Tool.Http
 
   @upload_url "http://upload.qiniu.com"
   @resource_url "http://ohnslot2o.bkt.clouddn.com"
@@ -28,10 +28,10 @@ defmodule Azalea.Uploader.Qiniu do
 
     case body do
       %{hash: _, key: key} ->
-        {kind, %{file | url: url_from_key(key),
-          uploader: __MODULE__, path: key}}
-      %{error: reason}  ->
-        {kind, reason}
+        %{file | url: url_from_key(key),
+          uploader: __MODULE__, path: key, key: kind}
+      %{error: _reason}  ->
+        :error
     end
 
   end

@@ -1,4 +1,4 @@
-defmodule Azalea.Uploader.Crypto do
+defmodule Azalea.Tool.Crypto do
   @moduledoc """
   Crypto Helper methods.
   """
@@ -11,6 +11,4 @@ defmodule Azalea.Uploader.Crypto do
   def url_base64(string) do
     string |> Base.url_encode64
   end
-
-
 end
