@@ -47,6 +47,7 @@ defmodule Azalea.Handler do
 
     defp do_handler(file, key)
     #{handler_method_string(calls)}
+    defp do_handler(_, _), do: []
     """
 
     Code.eval_string(method_string, [], env)
@@ -55,7 +56,7 @@ defmodule Azalea.Handler do
   defp handler_method_string(calls) do
     for {key, value} <- calls do
       """
-      defp do_handler(file, #{Macro.to_string(key)}) do
+      defp do_handler(#{Macro.to_string(key)}, file) do
         #{value}
       end
       """
@@ -90,6 +91,8 @@ defmodule Azalea.Handler do
   defmacro __using__(_opts) do
     quote do
       import unquote(__MODULE__)
+
+      @callback name(upload_kind :: atom) :: String.t
 
       Module.register_attribute __MODULE__, :calls, accumulate: true
 

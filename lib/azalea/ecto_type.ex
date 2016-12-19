@@ -12,51 +12,36 @@ defmodule Azalea.EctoType do
       def type, do: :text
 
       # check with the file and dispatch to the right result
-      def cast(file) do
-        cond do
-          is_binary(file) -> :error
-          is_atom(file) -> :error
-          is_map(file) -> do_cast(file)
-          %U{} = file -> do_cast(file)
+      def cast(file) when is_map(file), do: cast_single_file(file)
+      def cast(file) when is_list(file), do: cast_mutiply_file(file)
+      def cast(_), do: :error
+
+      defp cast_single_file(file) do
+        check_result = file |> file_valid?
+
+        case check_result do
+          true -> {:ok, __MODULE__.handle(file)}
+          false -> :error
         end
       end
 
-      # cast from Plug.Upload to Azalea.File
-      defp do_cast(file) do
-        result =
+      defp cast_mutiply_file(file) do
+        check_result =
           file
-          |> _cast([])
-          |> Enum.reject(&(length(&1) == 0))
+          |> Enum.map(&file_valid?/1)
+          |> Enum.all?
 
-        if result == :error do
-          :error
-        else
-          {:ok, result}
+        case check_result do
+          true -> {:ok, do_cast(file)}
+          false -> :error
         end
       end
 
-      # cast with the flow
-      defp _cast(files, result)
-
-      defp _cast([], result), do: result
-
-      defp _cast(%U{} = file, _result) do
-        [file |> __MODULE__.handle]
+      defp file_valid?(file) do
+        file
+        |> Azalea.File.cast_file
+        |> Azalea.File.valid?
       end
-
-      defp _cast([%U{} = file | tail], result) do
-        _cast(tail, result ++ [__MODULE__.handle(file)])
-      end
-
-      defp _cast([%{} = file | tail], result) do
-        _cast(tail, result ++ [__MODULE__.handle(file)])
-      end
-
-      defp _cast([_ | tail], result) do
-        _cast(tail, result ++ [:error])
-      end
-
-      defp _cast(_, _), do: :error
 
       # load from database
       def load(string) when is_binary(string) do
@@ -71,6 +56,13 @@ defmodule Azalea.EctoType do
       end
 
       def demp(_), do: :error
+
+      # cast with the flow
+      defp do_cast(files, result \\ [])
+      defp do_cast([], result), do: Enum.reverse(result)
+      defp do_cast([file | tail], result) do
+        do_cast(tail, [__MODULE__.handle(file) | result])
+      end
     end
   end
 end
