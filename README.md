@@ -10,7 +10,7 @@ You can check the [Example](https://github.com/h1u2i3/azalea_example)
 
   ```elixir
   def deps do
-    [{:azalea, github: "h1u2i3/azalea"]
+    [{:azalea, "~> 0.0.1"]
   end
   ```
 

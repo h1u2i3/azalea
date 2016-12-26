@@ -33,20 +33,30 @@ defmodule Azalea.Handler do
 
     method_string = """
     def handle(struct) do
-      file = struct |> cast_file |> check
-      file = %{file | module: #{env.module}}
+      if struct == [] do
+        []
+      else
+        file = struct |> cast_file |> check
+        file = %{file | module: #{env.module}}
 
-      case file.valid do
-        true ->
-          #{Macro.to_string(keys)}
-          |> Enum.map(&do_handler(file, &1))
-        false ->
-          []
+        case file.valid do
+          true ->
+            #{Macro.to_string(keys)}
+            |> Enum.map(&do_handler(&1, file))
+            |> Azalea.Type.BaseType.cast
+          false ->
+            {:error, :file_invalid}
+        end
       end
     end
 
-    defp do_handler(file, key)
+    defp do_handler(key, file)
+
     #{handler_method_string(calls)}
+
+    defp do_handler(_, _) do
+      raise "you should add the method 'handler' before you start"
+    end
     """
 
     Code.eval_string(method_string, [], env)
@@ -55,7 +65,7 @@ defmodule Azalea.Handler do
   defp handler_method_string(calls) do
     for {key, value} <- calls do
       """
-      defp do_handler(file, #{Macro.to_string(key)}) do
+      defp do_handler(#{Macro.to_string(key)}, file) do
         #{value}
       end
       """
@@ -90,6 +100,8 @@ defmodule Azalea.Handler do
   defmacro __using__(_opts) do
     quote do
       import unquote(__MODULE__)
+
+      @callback name(upload_kind :: atom) :: String.t
 
       Module.register_attribute __MODULE__, :calls, accumulate: true
 

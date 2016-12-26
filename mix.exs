@@ -1,19 +1,26 @@
 defmodule Azalea.Mixfile do
   use Mix.Project
 
+  @version "0.0.1"
+
   def project do
     [
       app: :azalea,
-      version: "0.1.0",
+      version: @version,
       elixir: "~> 1.3",
       build_embedded: Mix.env == :prod,
       start_permanent: Mix.env == :prod,
+      deps: deps(),
+      package: package(),
       deps: deps(),
       test_coverage: [tool: ExCoveralls],
       preferred_cli_env: ["coveralls": :test,
                           "coveralls.detail": :test,
                           "coveralls.post": :test,
                           "coveralls.html": :test],
+      docs: [extras: ["README.md"], main: "readme",
+       source_ref: "v#{@version}",
+       source_url: "https://github.com/h1u2i3/azalea"]
     ]
   end
 
@@ -28,6 +35,12 @@ defmodule Azalea.Mixfile do
         :plug
       ]
     ]
+  end
+
+  defp description do
+    """
+    Azalea is aim to make upload file in Phoenix easy.
+    """
   end
 
   # Dependencies can be Hex packages:
@@ -55,6 +68,15 @@ defmodule Azalea.Mixfile do
       {:httparrot, "~> 0.5", only: :test},
 
       {:credo, "~> 0.5", only: [:dev, :test]}
+    ]
+  end
+
+  defp package do
+    [
+      name: :ex_wechat,
+      maintainers: ["h1u2i3"],
+      licenses: ["MIT"],
+      links: %{"GitHub" => "https://github.com/h1u2i3/azalea"}
     ]
   end
 end

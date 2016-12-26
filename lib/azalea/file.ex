@@ -15,7 +15,7 @@ defmodule Azalea.File do
   alias Azalea.File, as: AF
 
   defstruct filename: nil, type: nil, path: nil, valid: true,
-            uploader: nil, module: nil, url: nil
+            uploader: nil, module: nil, url: nil, key: nil
 
   @doc """
   Cast from other struct, include Map, Plug.Upload, Ecto.Changeset
@@ -36,18 +36,23 @@ defmodule Azalea.File do
   end
 
   def cast_file(params, _field) when is_map(params) do
-    make_struct_from_target(params)
+    make_struct_from(params)
   end
 
-  def cast_file(_, _) do
-    empty_struct
-  end
+  def cast_file(_, _), do: invalid_empty_struct
 
   @doc """
   Check if the File struct is empty
   """
   def is_empty?(struct) do
     !struct.filename || !struct.type || !struct.path
+  end
+
+  @doc """
+  Check if the file is valid
+  """
+  def valid?(file) do
+    file.valid
   end
 
   @doc """
@@ -81,8 +86,12 @@ defmodule Azalea.File do
   end
 
   defp from_plug(struct) do
-    %AF{empty_struct | type: get_file_type(struct.content_type),
-          filename: struct.filename, path: struct.path}
+    if !struct.filename || !struct.content_type || !struct.path do
+      invalid_empty_struct
+    else
+      %AF{empty_struct | type: get_file_type(struct.content_type),
+                         filename: struct.filename, path: struct.path}
+    end
   end
 
   defp from_changeset(struct, field) do
@@ -90,22 +99,27 @@ defmodule Azalea.File do
     from_plug(plug_upload)
   end
 
+  def invalid_empty_struct do
+    %{empty_struct | valid: false}
+  end
+
   defp empty_struct do
     %AF{}
   end
 
-  defp make_struct_from_target(struct)
-  defp make_struct_from_target(struct) when is_map(struct) do
+  # tansform from other struct to Azalea.File
+  defp make_struct_from(struct)
+  defp make_struct_from(struct) when is_map(struct) do
     case struct do
       %{file: path, type: type} ->
         struct(AF, %{type: type,
                      filename: Path.basename(path),
                      path: path })
       _ ->
-        empty_struct
+        invalid_empty_struct
     end
   end
-  defp make_struct_from_target(_), do: empty_struct
+  defp make_struct_from(_), do: invalid_empty_struct
 
   defp get_file_type(content_type) do
     type =
@@ -113,7 +127,7 @@ defmodule Azalea.File do
       |> Plug.Conn.Utils.media_type
       |> elem(2)
       |> String.to_atom
-    type = if type == :jpeg, do: :jpg
+    type = if type == :jpeg, do: :jpg, else: type
     type
   end
 

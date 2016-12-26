@@ -65,26 +65,6 @@ defmodule Azalea.Checker do
         |> validate_size
       end
 
-      @doc """
-      Validate method for use with ecto.
-      """
-      def validate_upload(changeset, field) do
-        value = changeset |> get_change(field)
-        case value do
-          nil -> changeset
-          _ ->
-            require Logger
-            Logger.info inspect(value)
-            if length(value) == 0 do
-              validate_change(changeset, field, fn(_, _) ->
-                [{field, "Upload file invalid!"}]
-              end)
-            else
-              changeset
-            end
-        end
-      end
-
       defp file_type_in?(file, types) do
         allow = types[:allow] || []
         except = types[:except] || []
