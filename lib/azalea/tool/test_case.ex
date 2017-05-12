@@ -11,7 +11,7 @@ defmodule Azalea.Tool.TestCase do
   Just to make the test go easy.
   Ecto.Changeset.cast %Site.User{}, %{photo: Azalea.Tool.TestCase.make_file(:jpg, :remote)}, [:photo]
   """
-  def make_file(type, key \\ :main) do
+  def make_file(type, url, key \\ :main) do
     # generate a random file from Plug.Upload
     temp = Upload.random_file!("azalea")
 
@@ -23,7 +23,7 @@ defmodule Azalea.Tool.TestCase do
         path: temp,
         module: __MODULE__,
         uploader: Azalea.Uploader.Local,
-        url: "fake_url",
+        url: url,
         valid: true
       }
 

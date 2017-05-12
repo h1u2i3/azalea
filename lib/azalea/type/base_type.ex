@@ -11,7 +11,7 @@ defmodule Azalea.Type.BaseType do
     if files == [] do
       {:error, :empty}
     else
-      %{ empty_struct | files: build_files(files) }
+      %{ empty_struct() | files: build_files(files) }
     end
   end
 

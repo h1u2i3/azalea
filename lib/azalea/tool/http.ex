@@ -3,7 +3,7 @@ defmodule Azalea.Tool.Http do
   Make http request
   """
   def post(url, body) do
-    ensure_httpoison_started
+    ensure_httpoison_started()
     headers = [{"Content-Type", "multipart/form-data"}]
     url |> HTTPoison.post(body, headers)
   end

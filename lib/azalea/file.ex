@@ -39,7 +39,7 @@ defmodule Azalea.File do
     make_struct_from(params)
   end
 
-  def cast_file(_, _), do: invalid_empty_struct
+  def cast_file(_, _), do: invalid_empty_struct()
 
   @doc """
   Check if the File struct is empty
@@ -87,9 +87,9 @@ defmodule Azalea.File do
 
   defp from_plug(struct) do
     if !struct.filename || !struct.content_type || !struct.path do
-      invalid_empty_struct
+      invalid_empty_struct()
     else
-      %AF{empty_struct | type: get_file_type(struct.content_type),
+      %AF{empty_struct() | type: get_file_type(struct.content_type),
                          filename: struct.filename, path: struct.path}
     end
   end
@@ -100,7 +100,7 @@ defmodule Azalea.File do
   end
 
   def invalid_empty_struct do
-    %{empty_struct | valid: false}
+    %{empty_struct() | valid: false}
   end
 
   defp empty_struct do
@@ -116,10 +116,10 @@ defmodule Azalea.File do
                      filename: Path.basename(path),
                      path: path })
       _ ->
-        invalid_empty_struct
+        invalid_empty_struct()
     end
   end
-  defp make_struct_from(_), do: invalid_empty_struct
+  defp make_struct_from(_), do: invalid_empty_struct()
 
   defp get_file_type(content_type) do
     type =

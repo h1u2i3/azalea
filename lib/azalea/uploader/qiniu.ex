@@ -45,8 +45,8 @@ defmodule Azalea.Uploader.Qiniu do
   end
 
   defp build_upload_token(strategy) do
-    access_key = config[:access_key]
-    secret_key = config[:secret_key]
+    access_key = config()[:access_key]
+    secret_key = config()[:secret_key]
 
     encoded_put_policy = strategy |> url_base64
     encoded_sign = encoded_put_policy |> sha_mac(secret_key) |> url_base64
